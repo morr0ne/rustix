@@ -70,6 +70,31 @@ pub fn mount2<Source: path::Arg, Target: path::Arg, Fs: path::Arg>(
     })
 }
 
+/// `mount2(source, target, filesystemtype, mountflags, data)`
+///
+/// # References
+///  - [Linux]
+///
+/// [Linux]: https://man7.org/linux/man-pages/man2/mount.2.html
+#[inline]
+pub fn mount_none<Target: path::Arg, Fs: path::Arg>(
+    target: Target,
+    file_system_type: Fs,
+    data: Option<&CStr>,
+) -> io::Result<()> {
+    target.into_with_c_str(|target| {
+        file_system_type.into_with_c_str(|file_system_type| {
+            backend::mount::syscalls::mount(
+                None,
+                target,
+                Some(file_system_type),
+                MountFlagsArg(0),
+                data,
+            )
+        })
+    })
+}
+
 /// `mount(NULL, target, NULL, MS_REMOUNT | mountflags, data)`
 ///
 /// # References

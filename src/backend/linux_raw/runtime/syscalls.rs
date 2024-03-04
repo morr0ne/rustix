@@ -25,7 +25,7 @@ use crate::runtime::{Fork, How, Sigaction, Siginfo, Sigset, Stack};
 use crate::signal::Signal;
 use crate::timespec::Timespec;
 use crate::utils::option_as_ptr;
-use core::ffi::c_void;
+use core::ffi::{c_char, c_void};
 use core::mem::MaybeUninit;
 #[cfg(target_pointer_width = "32")]
 use linux_raw_sys::general::__kernel_old_timespec;
@@ -98,8 +98,8 @@ pub(crate) unsafe fn execveat(
 
 pub(crate) unsafe fn execve(
     path: &CStr,
-    args: *const *const u8,
-    env_vars: *const *const u8,
+    args: *const *const c_char,
+    env_vars: *const *const c_char,
 ) -> io::Errno {
     ret_error(syscall_readonly!(__NR_execve, path, args, env_vars))
 }

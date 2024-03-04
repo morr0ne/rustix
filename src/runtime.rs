@@ -40,7 +40,7 @@ use crate::pid::Pid;
 #[cfg(feature = "fs")]
 use backend::fd::AsFd;
 #[cfg(linux_raw)]
-use core::ffi::c_void;
+use core::ffi::{c_char, c_void};
 
 #[cfg(linux_raw)]
 pub use crate::signal::Signal;
@@ -362,7 +362,11 @@ pub unsafe fn execveat<Fd: AsFd>(
 ///
 /// [Linux]: https://man7.org/linux/man-pages/man2/execve.2.html
 #[inline]
-pub unsafe fn execve(path: &CStr, argv: *const *const u8, envp: *const *const u8) -> io::Errno {
+pub unsafe fn execve(
+    path: &CStr,
+    argv: *const *const c_char,
+    envp: *const *const c_char,
+) -> io::Errno {
     backend::runtime::syscalls::execve(path, argv, envp)
 }
 
